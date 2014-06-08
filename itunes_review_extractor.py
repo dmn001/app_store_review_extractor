@@ -38,8 +38,8 @@ class itunes_review_extractor():
     def get_all_reviews(self):
         self.review_count = 1234
         while(self.start_index < self.review_count):
-            print self.start_index
             self.update_end_index()
+            print self.start_index, self.end_index
             self.start_index = self.start_index + self.range
 
 
