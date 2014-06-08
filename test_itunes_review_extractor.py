@@ -1,6 +1,6 @@
 from itunes_review_extractor import itunes_review_extractor
 
-e = itunes_review_extractor('624555293')
+e = itunes_review_extractor('623592465')
 
 # e.get_reviews()
 # e.print_reviews()
@@ -9,4 +9,6 @@ e = itunes_review_extractor('624555293')
 # json = e.get_review_info()
 # print json
 
-e.get_review_count()
+# count = e.get_review_count()
+
+e.get_all_reviews()
