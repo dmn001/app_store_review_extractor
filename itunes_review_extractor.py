@@ -1,4 +1,5 @@
-import requests, json, csv, re, sys
+import requests, json, re, sys, unicodecsv
+from cStringIO import StringIO
 
 class itunes_review_extractor():
     def __init__(self,appid=None,itunes_url=None):
@@ -9,7 +10,11 @@ class itunes_review_extractor():
         if appid is not None:
             self.appid = appid
             self.app_name = ''
+
+        self.out_base_filename = self.appid + self.app_name
+        
         self.user_agent_string = 'iTunes/11.1.5 (Windows; Microsoft Windows 7 x64 Ultimate Edition Service Pack 1 (Build 7601)) AppleWebKit/537.60.15'
+
         self.start_index = 0
         self.range = 1000
         self.end_index = self.start_index + self.range - 1
@@ -21,7 +26,6 @@ class itunes_review_extractor():
         self.results = []
 
         self.csv_fh = None
-
 
     def get_review_info(self):
         self.url = 'https://itunes.apple.com/us/customer-reviews/id%s?dataOnly=true&displayable-kind=11&appVersion=all' % (self.appid)
@@ -48,32 +52,31 @@ class itunes_review_extractor():
     def get_all_reviews(self):
         self.get_review_count()
         print "getting %i reviews" % self.review_count
-        # self.output_csv_init()
+        self.output_csv_init()
         while(self.start_index < self.review_count):
             self.update_end_index()
             print self.start_index, self.end_index
             json_string = self.get_reviews()
             self.start_index = self.start_index + self.range
             self.append_json_list_to_results(json_string)
-            # self.output_append_to_csv(json_string)
+            self.output_append_to_csv(json_string)
         self.output_results_to_json()
 
     def append_json_list_to_results(self,json_string):
         self.results = self.results + json_string['userReviewList']
 
     def output_csv_init(self):
-        self.csv_fh = open(self.appid+'.csv', 'wb')
-        csv_header = ['body', 'rating', 'name', 'title', 'voteSum', 'voteCount', 'date', 'userReviewId']
-        wr = csv.writer(self.csv_fh, quoting=csv.QUOTE_ALL)
-        wr.writerow(csv_header)
+        self.csv_fh = open(self.out_base_filename+'.csv', 'wb')
+        header = ['userReviewId', 'date', 'voteSum', 'voteCount', 'rating', 'name', 'title', 'body']
+        w = unicodecsv.writer(self.csv_fh, encoding='utf-8')
+        w.writerow(header)
 
     def output_append_to_csv(self,json_string):
-        # body, rating, name, title, voteSum, voteCount, date, userReviewId
+        # userReviewId, date, voteSum, voteCount, rating, name, title, body
         for r in json_string['userReviewList']:
-            out_list = [r['body'],r['rating'],r['name'],r['title'],r['voteSum'],r['voteCount'],r['date'],r['userReviewId']]
-            out_list=[str(s).encode('utf-8') for s in out_list]
-            wr = csv.writer(self.csv_fh, quoting=csv.QUOTE_ALL)
-            wr.writerow(out_list)
+            out_list = [r['userReviewId'],r['date'],r['voteSum'],r['voteCount'],r['rating'],r['name'],r['title'],r['body']]
+            w = unicodecsv.writer(self.csv_fh, encoding='utf-8')
+            w.writerow(out_list)
 
     def update_end_index(self):
         self.end_index = self.start_index + self.range - 1
@@ -81,10 +84,9 @@ class itunes_review_extractor():
             self.end_index = self.review_count - 1
 
     def output_results_to_json(self):
-        out_filename = self.appid + self.app_name +'.json'
-        with open(out_filename, 'w') as outfile:
+        with open(self.out_base_filename+'.json', 'w') as outfile:
             json.dump(self.results, outfile)
-        print "output to %s" % out_filename
+        print "output to %s" % self.out_base_filename+'.json'
 
     def get_id_from_url(self,itunes_url):
         m = re.search(r"/([^/]+)/id(\d+)",itunes_url)

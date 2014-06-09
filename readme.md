@@ -20,13 +20,15 @@ output = appid_app-name.json
 
 ##notes
 
+python 2.7+ dependencies: requests, unicodecsv
+
 requests are made using the itunes user agent
 
 output is most recent first
 
 ##todo
 
-output unicode csv
+different country other than US
 
 ##links
 
@@ -39,3 +41,5 @@ http://jsonviewer.stack.hu/
 http://stackoverflow.com/questions/10569438/how-to-print-unicode-character-in-python
 
 http://stackoverflow.com/questions/17245415/read-and-write-csv-files-including-unicode-with-python-2-7
+
+https://pypi.python.org/pypi/unicodecsv/0.9.4
