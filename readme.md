@@ -1,4 +1,4 @@
-#Python review extractor for iTunes
+#iTunes app review extractor in Python
 
 ##info
 
