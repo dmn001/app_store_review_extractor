@@ -43,3 +43,11 @@ http://stackoverflow.com/questions/10569438/how-to-print-unicode-character-in-py
 http://stackoverflow.com/questions/17245415/read-and-write-csv-files-including-unicode-with-python-2-7
 
 https://pypi.python.org/pypi/unicodecsv/0.9.4
+
+http://stackoverflow.com/questions/15077634/typeerror-decoding-unicode-is-not-supported
+
+http://stackoverflow.com/questions/9571151/in-python-how-do-i-convert-a-list-of-ints-and-strings-to-unicode
+
+http://stackoverflow.com/questions/2201633/replace-newlines-in-a-unicode-string
+
+http://stackoverflow.com/questions/5838605/python-dictwriter-writing-utf-8-encoded-csv-files
