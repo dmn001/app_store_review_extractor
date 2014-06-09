@@ -59,6 +59,7 @@ class itunes_review_extractor():
             self.start_index = self.start_index + self.range
             self.append_json_list_to_results(json_string)
             self.output_append_to_csv(json_string)
+        print "output to %s" % self.out_base_filename+'.csv'
         self.output_results_to_json()
 
     def append_json_list_to_results(self,json_string):
