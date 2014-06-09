@@ -2,7 +2,11 @@
 
 ##info
 
-input = appid or itunes_url
+input = itunes_url
+
+usage:
+
+    python itunes_review_extractor.py itunes_url
 
 get the review count
 
