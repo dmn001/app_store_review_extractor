@@ -6,7 +6,7 @@ class itunes_review_extractor():
         self.appid = appid
         self.user_agent_string = 'iTunes/11.1.5 (Windows; Microsoft Windows 7 x64 Ultimate Edition Service Pack 1 (Build 7601)) AppleWebKit/537.60.15'
         self.start_index = 0
-        self.range = 100
+        self.range = 1000
         self.end_index = self.start_index + self.range - 1
         
         self.session = requests.Session()
@@ -26,7 +26,7 @@ class itunes_review_extractor():
     def get_review_count(self):
         self.get_review_info()
         self.review_count = int(self.json_string['totalNumberOfReviews'])
-        # print "totalNumberOfReviews =", self.json_string['totalNumberOfReviews']
+        print "getting %i reviews " % self.json_string['totalNumberOfReviews']
         return self.review_count
 
     def get_reviews(self,start_index=None):
@@ -41,8 +41,9 @@ class itunes_review_extractor():
         return self.json_string
 
     def get_all_reviews(self):
-        self.review_count = 350
-        self.output_csv_init()
+        # self.review_count = 350
+        self.get_review_count()
+        # self.output_csv_init()
         while(self.start_index < self.review_count):
             self.update_end_index()
             print self.start_index, self.end_index
@@ -50,7 +51,7 @@ class itunes_review_extractor():
             self.start_index = self.start_index + self.range
             self.append_json_to_results(json_string)
             # self.output_append_to_csv(json_string)
-        self.output_json_to_file()
+        self.output_results_to_json()
 
     def append_json_to_results(self,json_string):
         self.results = self.results + json_string['userReviewList']
@@ -73,12 +74,14 @@ class itunes_review_extractor():
 
     def update_end_index(self):
         self.end_index = self.start_index + self.range - 1
+        if self.end_index > self.review_count:
+            self.end_index = self.review_count - 1
 
     # def print_reviews(self):
     #     for item in self.json_string['userReviewList']:
     #         print item['body']
 
-    def output_json_to_file(self):
+    def output_results_to_json(self):
         # print self.results
         # for item in self.results:
             # print item
