@@ -20,6 +20,8 @@ output is most recent first
 
 output unicode csv
 
+add command line input
+
 ##links
 
 http://docs.python-requests.org/en/latest/user/advanced/
