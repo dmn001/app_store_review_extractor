@@ -26,7 +26,6 @@ class itunes_review_extractor():
     def get_review_count(self):
         self.get_review_info()
         self.review_count = int(self.json_string['totalNumberOfReviews'])
-        print "getting %i reviews " % self.json_string['totalNumberOfReviews']
         return self.review_count
 
     def get_reviews(self,start_index=None):
@@ -41,23 +40,20 @@ class itunes_review_extractor():
         return self.json_string
 
     def get_all_reviews(self):
-        # self.review_count = 350
         self.get_review_count()
+        print "getting %i reviews " % self.review_count
         # self.output_csv_init()
         while(self.start_index < self.review_count):
             self.update_end_index()
             print self.start_index, self.end_index
             json_string = self.get_reviews()
             self.start_index = self.start_index + self.range
-            self.append_json_to_results(json_string)
+            self.append_json_list_to_results(json_string)
             # self.output_append_to_csv(json_string)
         self.output_results_to_json()
 
-    def append_json_to_results(self,json_string):
+    def append_json_list_to_results(self,json_string):
         self.results = self.results + json_string['userReviewList']
-        for r in json_string['userReviewList']:
-            pass
-            # print r['body'],r['rating'],r['name'],r['title'],r['voteSum'],r['voteCount'],r['date'],r['userReviewId']
 
     def output_csv_init(self):
         self.csv_fh = open(self.appid+'.csv', 'wb')
@@ -66,6 +62,7 @@ class itunes_review_extractor():
         wr.writerow(csv_header)
 
     def output_append_to_csv(self,json_string):
+        # body, rating, name, title, voteSum, voteCount, date, userReviewId
         for r in json_string['userReviewList']:
             out_list = [r['body'],r['rating'],r['name'],r['title'],r['voteSum'],r['voteCount'],r['date'],r['userReviewId']]
             out_list=[str(s).encode('utf-8') for s in out_list]
@@ -77,17 +74,6 @@ class itunes_review_extractor():
         if self.end_index > self.review_count:
             self.end_index = self.review_count - 1
 
-    # def print_reviews(self):
-    #     for item in self.json_string['userReviewList']:
-    #         print item['body']
-
     def output_results_to_json(self):
-        # print self.results
-        # for item in self.results:
-            # print item
         with open(self.appid+'.json', 'w') as outfile:
           json.dump(self.results, outfile)
-          # json.dump(self.response.json(), outfile)
-
-
-        # body, rating, name, title, voteSum, voteCount, date, userReviewId
