@@ -1,5 +1,4 @@
-import requests, json, re, sys, unicodecsv
-from cStringIO import StringIO
+import requests, json, re, sys, unicodecsv, codecs
 
 class itunes_review_extractor():
     def __init__(self,appid=None,itunes_url=None):
@@ -66,17 +65,17 @@ class itunes_review_extractor():
         self.results = self.results + json_string['userReviewList']
 
     def output_csv_init(self):
-        self.csv_fh = open(self.out_base_filename+'.csv', 'wb')
+        self.csv_fh = codecs.open(self.out_base_filename+'.csv', 'wb')
+        self.csv_fh.write(u'\uFEFF'.encode('utf8'))
         header = ['userReviewId', 'date', 'voteSum', 'voteCount', 'rating', 'name', 'title', 'body']
-        w = unicodecsv.writer(self.csv_fh, encoding='utf-8')
-        w.writerow(header)
+        self.csv_unicode_writer = unicodecsv.writer(self.csv_fh, encoding='utf-8')
+        self.csv_unicode_writer.writerow(header)
 
     def output_append_to_csv(self,json_string):
         # userReviewId, date, voteSum, voteCount, rating, name, title, body
         for r in json_string['userReviewList']:
             out_list = [r['userReviewId'],r['date'],r['voteSum'],r['voteCount'],r['rating'],r['name'],r['title'],r['body']]
-            w = unicodecsv.writer(self.csv_fh, encoding='utf-8')
-            w.writerow(out_list)
+            self.csv_unicode_writer.writerow(out_list)
 
     def update_end_index(self):
         self.end_index = self.start_index + self.range - 1
@@ -97,7 +96,6 @@ class itunes_review_extractor():
         else:
             print "error, no match found"
             return -1
-
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
