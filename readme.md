@@ -8,6 +8,10 @@ usage:
 
     python itunes_review_extractor.py itunes_url
 
+e.g.
+
+    python itunes_review_extractor.py https://itunes.apple.com/us/app/sparkle-unleashed/id824153738?mt=8
+
 get the review count
 
 make requests in batches of 1000
