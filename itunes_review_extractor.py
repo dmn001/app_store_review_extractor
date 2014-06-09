@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
-import requests, json, csv
+import requests, json, csv, re
 
 class itunes_review_extractor():
-    def __init__(self,appid):
-        self.appid = appid
+    def __init__(self,appid=None,itunes_url=None):
+        if itunes_url is not None:
+            ret = self.get_id_from_url(itunes_url)
+            if ret == -1:
+                return
+        if appid is not None:
+            self.appid = appid
+            self.app_name = ''
         self.user_agent_string = 'iTunes/11.1.5 (Windows; Microsoft Windows 7 x64 Ultimate Edition Service Pack 1 (Build 7601)) AppleWebKit/537.60.15'
         self.start_index = 0
         self.range = 1000
@@ -16,6 +22,7 @@ class itunes_review_extractor():
         self.results = []
 
         self.csv_fh = None
+
 
     def get_review_info(self):
         self.url = 'https://itunes.apple.com/us/customer-reviews/id%s?dataOnly=true&displayable-kind=11&appVersion=all' % (self.appid)
@@ -41,7 +48,7 @@ class itunes_review_extractor():
 
     def get_all_reviews(self):
         self.get_review_count()
-        print "getting %i reviews " % self.review_count
+        print "getting %i reviews" % self.review_count
         # self.output_csv_init()
         while(self.start_index < self.review_count):
             self.update_end_index()
@@ -75,5 +82,17 @@ class itunes_review_extractor():
             self.end_index = self.review_count - 1
 
     def output_results_to_json(self):
-        with open(self.appid+'.json', 'w') as outfile:
-          json.dump(self.results, outfile)
+        out_filename = self.appid + self.app_name +'.json'
+        with open(out_filename, 'w') as outfile:
+            json.dump(self.results, outfile)
+        print "output to %s" % out_filename
+
+    def get_id_from_url(self,itunes_url):
+        m = re.search(r"/([^/]+)/id(\d+)",itunes_url)
+        if m:
+            # print m.groups()
+            self.app_name = '_' + m.groups()[0]
+            self.appid = m.groups()[1]
+        else:
+            print "error, no match found"
+            return -1
