@@ -75,6 +75,7 @@ class itunes_review_extractor():
         # userReviewId, date, voteSum, voteCount, rating, name, title, body
         for r in json_string['userReviewList']:
             out_list = [r['userReviewId'],r['date'],r['voteSum'],r['voteCount'],r['rating'],r['name'],r['title'],r['body']]
+            out_list = [' <br> '.join(item.splitlines()).encode('utf-8') if isinstance(item, basestring) else item for item in out_list]
             self.csv_unicode_writer.writerow(out_list)
 
     def update_end_index(self):
