@@ -16,7 +16,10 @@ get the review count
 
 make requests in batches of 1000
 
-output = appid_app-name.json
+output = 
+
+    appid_app-name.json
+    appid_app-name.csv
 
 ##notes
 
