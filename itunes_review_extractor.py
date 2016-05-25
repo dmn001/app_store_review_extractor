@@ -102,9 +102,7 @@ class itunes_review_extractor():
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         itunes_url = sys.argv[1]
+        e = itunes_review_extractor(itunes_url=itunes_url)
+        e.get_all_reviews()
     else:
-        print "usage: 'python itunes_review_extractor.py itunes_url'"
-        itunes_url = 'https://itunes.apple.com/us/app/sparkle-unleashed/id824153738?mt=8'
-        print "e.g. : %s" % itunes_url
-    e = itunes_review_extractor(itunes_url=itunes_url)
-    e.get_all_reviews()
+        print "usage: python itunes_review_extractor.py url"
