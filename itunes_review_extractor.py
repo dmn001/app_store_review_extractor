@@ -1,4 +1,9 @@
-import requests, json, re, sys, unicodecsv, codecs
+import requests
+import json
+import re
+import sys
+import unicodecsv
+import codecs
 
 class itunes_review_extractor():
     def __init__(self,appid=None,itunes_url=None):
@@ -11,13 +16,13 @@ class itunes_review_extractor():
             self.app_name = ''
 
         self.out_base_filename = self.appid + self.app_name
-        
+
         self.user_agent_string = 'iTunes/11.1.5 (Windows; Microsoft Windows 7 x64 Ultimate Edition Service Pack 1 (Build 7601)) AppleWebKit/537.60.15'
 
         self.start_index = 0
         self.range = 1000
         self.end_index = self.start_index + self.range - 1
-        
+
         self.session = requests.Session()
         self.session.headers.update({'User-Agent':self.user_agent_string})
 
