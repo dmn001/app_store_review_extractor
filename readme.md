@@ -1,6 +1,6 @@
-#iTunes app review extractor in Python
+# iTunes app review extractor in Python
 
-##info
+## info
 
 input = itunes_url
 
@@ -21,7 +21,7 @@ output =
     appid_app-name.json
     appid_app-name.csv
 
-##notes
+## notes
 
 python 2.7+ dependencies: requests, unicodecsv
 
@@ -29,11 +29,11 @@ requests are made using the itunes user agent
 
 output is most recent first
 
-##todo
+## todo
 
 different country other than US
 
-##links
+## links
 
 http://docs.python-requests.org/en/latest/user/advanced/
 
