@@ -2,8 +2,6 @@
 
 ## info
 
-input = app_store_url
-
 usage:
 
     python app_store_review_extractor.py app_store_url
@@ -32,4 +30,3 @@ output is most recent first
 ## todo
 
 different country other than US
-
