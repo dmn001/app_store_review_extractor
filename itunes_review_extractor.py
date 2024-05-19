@@ -4,6 +4,8 @@ import re
 import sys
 import unicodecsv
 import codecs
+from pprint import pprint
+import html
 
 class itunes_review_extractor():
     def __init__(self,appid=None,itunes_url=None):
@@ -17,7 +19,7 @@ class itunes_review_extractor():
 
         self.out_base_filename = self.appid + self.app_name
 
-        self.user_agent_string = 'iTunes/11.1.5 (Windows; Microsoft Windows 7 x64 Ultimate Edition Service Pack 1 (Build 7601)) AppleWebKit/537.60.15'
+        self.user_agent_string = 'iTunes/11.1.5 () AppleWebKit/537.60.15'
 
         self.start_index = 0
         self.range = 1000
@@ -40,6 +42,7 @@ class itunes_review_extractor():
     def get_review_count(self):
         self.get_review_info()
         self.review_count = int(self.json_string['totalNumberOfReviews'])
+        # pprint(self.json_string)
         return self.review_count
 
     def get_reviews(self,start_index=None):
@@ -48,23 +51,23 @@ class itunes_review_extractor():
         else:
             self.update_end_index()
         self.url = 'https://itunes.apple.com/WebObjects/MZStore.woa/wa/userReviewsRow?id=%s&displayable-kind=11&startIndex=%s&endIndex=%s&sort=4&appVersion=all' % (self.appid,start_index,self.end_index)
-        print self.url
+        print(self.url)
         self.response = self.session.get(self.url)
         self.json_string = self.response.json()
         return self.json_string
 
     def get_all_reviews(self):
         self.get_review_count()
-        print "getting %i reviews" % self.review_count
+        print("getting %i reviews" % self.review_count)
         self.output_csv_init()
         while(self.start_index < self.review_count):
             self.update_end_index()
-            print self.start_index, self.end_index
+            print(self.start_index, self.end_index)
             json_string = self.get_reviews()
             self.start_index = self.start_index + self.range
             self.append_json_list_to_results(json_string)
             self.output_append_to_csv(json_string)
-        print "output to %s" % self.out_base_filename+'.csv'
+        print("output to %s" % self.out_base_filename+'.csv')
         self.output_results_to_json()
 
     def append_json_list_to_results(self,json_string):
@@ -81,7 +84,7 @@ class itunes_review_extractor():
         # userReviewId, date, voteSum, voteCount, rating, name, title, body
         for r in json_string['userReviewList']:
             out_list = [r['userReviewId'],r['date'],r['voteSum'],r['voteCount'],r['rating'],r['name'],r['title'],r['body']]
-            out_list = [' <br> '.join(item.splitlines()).encode('utf-8') if isinstance(item, basestring) else item for item in out_list]
+            out_list = [html.unescape(' <br> '.join(item.splitlines())) if isinstance(item, str) else item for item in out_list]
             self.csv_unicode_writer.writerow(out_list)
 
     def update_end_index(self):
@@ -92,7 +95,7 @@ class itunes_review_extractor():
     def output_results_to_json(self):
         with open(self.out_base_filename+'.json', 'w') as outfile:
             json.dump(self.results, outfile)
-        print "output to %s" % self.out_base_filename+'.json'
+        print("output to %s" % self.out_base_filename+'.json')
 
     def get_id_from_url(self,itunes_url):
         m = re.search(r"/([^/]+)/id(\d+)",itunes_url)
@@ -101,7 +104,7 @@ class itunes_review_extractor():
             self.app_name = '_' + m.groups()[0]
             self.appid = m.groups()[1]
         else:
-            print "error, no match found"
+            print("error, no match found")
             return -1
 
 if __name__ == "__main__":
@@ -110,4 +113,4 @@ if __name__ == "__main__":
         e = itunes_review_extractor(itunes_url=itunes_url)
         e.get_all_reviews()
     else:
-        print "usage: python itunes_review_extractor.py url"
+        print("usage: py itunes_review_extractor.py url")
