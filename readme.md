@@ -1,16 +1,16 @@
-# iTunes App Store review extractor in Python
+# iOS/iPadOS App Store review extractor in Python
 
 ## info
 
-input = itunes_url
+input = app_store_url
 
 usage:
 
-    python itunes_review_extractor.py itunes_url
+    python app_store_review_extractor.py app_store_url
 
 e.g.
 
-    python itunes_review_extractor.py https://apps.apple.com/us/app/super-hexagon/id549027629
+    python app_store_review_extractor.py https://apps.apple.com/us/app/super-hexagon/id549027629
 
 get the review count
 
