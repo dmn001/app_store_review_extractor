@@ -7,10 +7,10 @@ import codecs
 from pprint import pprint
 import html
 
-class itunes_review_extractor():
-    def __init__(self,appid=None,itunes_url=None):
-        if itunes_url is not None:
-            ret = self.get_id_from_url(itunes_url)
+class app_store_review_extractor():
+    def __init__(self,appid=None,app_store_url=None):
+        if app_store_url is not None:
+            ret = self.get_id_from_url(app_store_url)
             if ret == -1:
                 return
         if appid is not None:
@@ -97,8 +97,8 @@ class itunes_review_extractor():
             json.dump(self.results, outfile)
         print("output to %s" % self.out_base_filename+'.json')
 
-    def get_id_from_url(self,itunes_url):
-        m = re.search(r"/([^/]+)/id(\d+)",itunes_url)
+    def get_id_from_url(self,app_store_url):
+        m = re.search(r"/([^/]+)/id(\d+)",app_store_url)
         if m:
             # print m.groups()
             self.app_name = '_' + m.groups()[0]
@@ -109,8 +109,8 @@ class itunes_review_extractor():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        itunes_url = sys.argv[1]
-        e = itunes_review_extractor(itunes_url=itunes_url)
+        app_store_url = sys.argv[1]
+        e = app_store_review_extractor(app_store_url=app_store_url)
         e.get_all_reviews()
     else:
-        print("usage: py itunes_review_extractor.py url")
+        print("usage: py app_store_review_extractor.py url")

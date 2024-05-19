@@ -1,4 +1,5 @@
 import requests, json
+from pprint import pprint
 
 appid = '624555293'
 
@@ -13,16 +14,17 @@ s = requests.Session()
 
 s.headers.update({'User-Agent':user_agent_string})
 
-print s.headers
+print(s.headers)
 
 r = s.get(url)
 
 j = r.json()
-for item in j['userReviewList']:
-	print item['body']
+
+pprint(j['userReviewList'][0])
+
 
 with open(appid+'.json', 'w') as outfile:
-  json.dump(r.json(), outfile)
+    json.dump(r.json(), outfile)
 
 
 # body, rating, name, title, voteSum, voteCount, date, userReviewId
