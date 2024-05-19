@@ -6,6 +6,7 @@ import unicodecsv
 import codecs
 from pprint import pprint
 import html
+import os
 
 class app_store_review_extractor():
     def __init__(self,appid=None,app_store_url=None):
@@ -16,6 +17,10 @@ class app_store_review_extractor():
         if appid is not None:
             self.appid = appid
             self.app_name = ''
+
+        self.out_dir = './output/'
+        if not os.path.exists(self.out_dir):
+            os.makedirs(self.out_dir)
 
         self.out_base_filename = self.appid + self.app_name
 
@@ -67,14 +72,14 @@ class app_store_review_extractor():
             self.start_index = self.start_index + self.range
             self.append_json_list_to_results(json_string)
             self.output_append_to_csv(json_string)
-        print("output to %s" % self.out_base_filename+'.csv')
+        print("output to %s" % self.out_dir + self.out_base_filename+'.csv')
         self.output_results_to_json()
 
     def append_json_list_to_results(self,json_string):
         self.results = self.results + json_string['userReviewList']
 
     def output_csv_init(self):
-        self.csv_fh = codecs.open(self.out_base_filename+'.csv', 'wb')
+        self.csv_fh = codecs.open(self.out_dir + self.out_base_filename+'.csv', 'wb')
         self.csv_fh.write(u'\uFEFF'.encode('utf8'))
         header = ['userReviewId', 'date', 'voteSum', 'voteCount', 'rating', 'name', 'title', 'body']
         self.csv_unicode_writer = unicodecsv.writer(self.csv_fh, encoding='utf-8')
@@ -93,9 +98,9 @@ class app_store_review_extractor():
             self.end_index = self.review_count - 1
 
     def output_results_to_json(self):
-        with open(self.out_base_filename+'.json', 'w') as outfile:
+        with open(self.out_dir + self.out_base_filename+'.json', 'w') as outfile:
             json.dump(self.results, outfile)
-        print("output to %s" % self.out_base_filename+'.json')
+        print("output to %s" % self.out_dir + self.out_base_filename+'.json')
 
     def get_id_from_url(self,app_store_url):
         m = re.search(r"/([^/]+)/id(\d+)",app_store_url)
